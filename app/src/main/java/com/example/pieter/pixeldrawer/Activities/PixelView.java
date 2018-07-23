@@ -11,19 +11,15 @@ import com.example.pieter.pixeldrawer.R;
 
 public class PixelView extends FrameLayout {
 
-    private Pixel pixel;
 
     public PixelView( Context context) {
         super(context);
         initPixelView();
     }
 
-    public PixelView( Context context, Pixel pixel) {
-        super(context);
-        this.pixel = pixel;
-        initPixelView();
-    }
-
+    /**
+     * inflates the pixelview to the gridlayout
+     */
     public void initPixelView(){
             LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 

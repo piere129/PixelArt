@@ -48,14 +48,22 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         setSupportActionBar(toolbar);
     }
 
-    // Menu icons are inflated just as they were with actionbar
+    /**
+     * inflates the options menu of the actionbar
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    /**
+     * persists all data of variables that need to be pertained during
+     * screen rotation or navigation to a new activity
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
@@ -68,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * assigns the necessary buttons and views to their respective layouts
+     */
     public void initGrid() {
         color_picker_button = (Button) findViewById(R.id.btnChoose);
         layout = (LinearLayout) findViewById(R.id.layout);
@@ -75,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
     }
 
+    /**
+     * initialises the OnClickListener for showing the color picking menu
+     */
     public void initOnClick() {
         color_picker_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,15 +98,22 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         });
     }
 
+    /**
+     * shows the color picking menu
+     */
     public void showColorPicker() {
         ColorPickerDialog.newBuilder().setColor(selectedColor).show(this);
     }
 
+    /**
+     * saves the selected color in a variable
+     * @param dialogId
+     * @param color
+     */
     @Override
     public void onColorSelected(int dialogId, int color) {
         selectedColor = color;
         gridView.setColor(color);
-        findViewById(R.id.layout).setBackgroundColor(selectedColor);
     }
 
     @Override

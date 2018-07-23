@@ -44,9 +44,10 @@ public class GridView extends GridLayout {
         this.setRowCount(grid.getSize());
         this.setColumnCount(grid.getSize());
 
+        //create pixelviews and set their backgroundcolor
         for (int i = 0; i < grid.getSize(); i++)
             for (int j = 0; j < grid.getSize(); j++) {
-                PixelView p = new PixelView(context,grid.getChildAt(i,j));
+                PixelView p = new PixelView(context);
                 final int x = i;
                 final int y = j;
                 p.setOnClickListener(new View.OnClickListener(){
@@ -123,6 +124,11 @@ public class GridView extends GridLayout {
         initGridView(getContext());
     }
 
+    /**
+     * returns a 2-dimensional array of all color values of each pixelview
+     * in the grid. Used to persist the colors during screen rotation
+     * @return
+     */
     public int[][] getColors(){
 
         int[][] array = new int[getSize()][getSize()];
@@ -137,6 +143,11 @@ public class GridView extends GridLayout {
         return array;
     }
 
+    /**
+     * sets a 2-dimensional array of all color values to each pixelview
+     * in the grid. Used to persist the colors during screen rotation
+     * @return
+     */
     public void setColors(int[][] colors)
     {
         int counter=0;
