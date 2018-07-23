@@ -11,15 +11,20 @@ import com.example.pieter.pixeldrawer.R;
 
 public class PixelView extends FrameLayout {
 
-    Pixel pixel;
+    private Pixel pixel;
 
     public PixelView( Context context) {
         super(context);
         initPixelView();
     }
 
-    public void initPixelView(){
+    public PixelView( Context context, Pixel pixel) {
+        super(context);
+        this.pixel = pixel;
+        initPixelView();
+    }
 
+    public void initPixelView(){
             LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             if(inflater != null){

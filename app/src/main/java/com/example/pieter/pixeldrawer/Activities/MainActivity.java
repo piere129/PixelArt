@@ -1,21 +1,17 @@
 package com.example.pieter.pixeldrawer.Activities;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Color;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 
 import com.example.pieter.pixeldrawer.R;
+import com.google.gson.Gson;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -24,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     private Button color_picker_button;
     private LinearLayout layout;
     private GridView gridView;
+    private Gson gson = new Gson();
 
     int selectedColor = (int) Color.BLACK;
 
@@ -32,13 +29,16 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        initGrid();
+        initOnClick();
 
         if(savedInstanceState != null)
         {
             selectedColor = savedInstanceState.getInt("color");
+            int[][] retrievedColors = gson.fromJson(savedInstanceState.getString("jsonColors"),int[][].class);
+            gridView.setColors(retrievedColors);
         }
-        initGrid();
-        initOnClick();
+
         onColorSelected(0,selectedColor);
 
         // Find the toolbar view inside the activity layout
@@ -58,7 +58,13 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
         outState.putInt("color", selectedColor);
+
+        int[][] colors = gridView.getColors();
+        String colorsStringified = gson.toJson(colors);
+        outState.putString("jsonColors",colorsStringified);
+
         super.onSaveInstanceState(outState);
     }
 
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         color_picker_button = (Button) findViewById(R.id.btnChoose);
         layout = (LinearLayout) findViewById(R.id.layout);
         this.gridView = findViewById(R.id.gridView);
+
     }
 
     public void initOnClick() {
@@ -78,12 +85,13 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     }
 
     public void showColorPicker() {
-        ColorPickerDialog.newBuilder().setColor(Color.BLACK).show(this);
+        ColorPickerDialog.newBuilder().setColor(selectedColor).show(this);
     }
 
     @Override
     public void onColorSelected(int dialogId, int color) {
         selectedColor = color;
+        gridView.setColor(color);
         findViewById(R.id.layout).setBackgroundColor(selectedColor);
     }
 

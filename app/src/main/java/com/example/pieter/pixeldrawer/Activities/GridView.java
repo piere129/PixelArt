@@ -10,21 +10,13 @@ import android.view.View;
 import android.widget.GridLayout;
 
 import com.example.pieter.pixeldrawer.Models.Grid;
-import com.example.pieter.pixeldrawer.Models.Pixel;
 
 public class GridView extends GridLayout {
 
-    private int size = 20;
-    private PixelClickListener pixelClickListener;
+    private Grid grid;
 
     public GridView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initGridView(context);
-    }
-
-    public GridView(Context context, AttributeSet attrs, int size) {
-        super(context, attrs);
-        this.size = size;
         initGridView(context);
     }
 
@@ -39,7 +31,7 @@ public class GridView extends GridLayout {
     private void initGridView(final Context context) {
 
         int width;
-        Grid grid;
+        grid = new Grid(20,Color.LTGRAY);
 
         //check to determine whether height or width should be used as measurement
         boolean isPortrait = getResources().getConfiguration().orientation
@@ -48,18 +40,22 @@ public class GridView extends GridLayout {
         //delete margin from calculation pixelsize
         int marginWidth = (int) pxFromDp(context, 40);
         width = calculateScreenSize(isPortrait) - marginWidth;
-        int pixelwidth = width / size;
-        this.setRowCount(size);
-        this.setColumnCount(size);
+        int pixelwidth = width / grid.getSize();
+        this.setRowCount(grid.getSize());
+        this.setColumnCount(grid.getSize());
 
-        for (int i = 0; i < size; i++)
-            for (int j = 0; j < size; j++) {
-                PixelView p = new PixelView(context);
-                if (i % 2 == 0) {
-                    p.setBackgroundColor(Color.RED);
-                } else {
-                    p.setBackgroundColor(Color.BLUE);
-                }
+        for (int i = 0; i < grid.getSize(); i++)
+            for (int j = 0; j < grid.getSize(); j++) {
+                PixelView p = new PixelView(context,grid.getChildAt(i,j));
+                final int x = i;
+                final int y = j;
+                p.setOnClickListener(new View.OnClickListener(){
+                    public void onClick(View view){
+                        view.setBackgroundColor(grid.getColor());
+                        grid.setColorAtIndex(x,y);
+                    }
+                });
+                p.setBackgroundColor(grid.getColor());
                 addView(p, pixelwidth, pixelwidth);
             }
 
@@ -106,10 +102,54 @@ public class GridView extends GridLayout {
         return dp * context.getResources().getDisplayMetrics().density;
     }
 
-    public interface PixelClickListener {
-
-        void onItemClick(PixelView view);
-
+    public int getColor()
+    {
+        return grid.getColor();
     }
+
+    public void setColor(int color)
+    {
+        grid.setColor(color);
+    }
+
+    public int getSize()
+    {
+       return grid.getSize();
+    }
+
+    public void setSize(int size)
+    {
+        grid.setSize(size);
+        initGridView(getContext());
+    }
+
+    public int[][] getColors(){
+
+        int[][] array = new int[getSize()][getSize()];
+        for(int i = 0;i < getSize();i++)
+        {
+            for(int j = 0;j < getSize(); j++)
+            {
+                array[i][j] = this.grid.getChildAt(i,j).getColor();
+            }
+        }
+        int[][] array2 = array;
+        return array;
+    }
+
+    public void setColors(int[][] colors)
+    {
+        int counter=0;
+        for(int i = 0;i < getSize();i++)
+        {
+            for(int j = 0;j < getSize(); j++)
+            {
+               this.getChildAt(counter).setBackgroundColor(colors[i][j]);
+               grid.getChildAt(i,j).setColor(colors[i][j]);
+               counter++;
+            }
+        }
+    }
+
 }
 
